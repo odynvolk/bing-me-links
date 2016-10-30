@@ -1,0 +1,27 @@
+{
+  "name": "bing-me-links",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Searches Bing and retrieves links in serp",
+  "dependencies": {
+    "cheerio": "^0.20.0",
+    "lodash": "^4.16.4",
+    "request": "^2.60.0",
+    "request-promise": "^4.1.1",
+    "sanitize-html": "^1.13.0",
+    "sleep": "^4.0.0",
+    "vo": "^4.0.2"
+  },
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "chai": "^3.5.0",
+    "coffee-script": "^1.10.0",
+    "eslint": "^2.13.1",
+    "mocha": "^2.5.3",
+    "mocha-cakes-2": "^1.1.1"
+  },
+  "repository": "odynvolk/bing-me-links",
+  "scripts": {
+    "test": "mocha && eslint ."
+  }
+}
