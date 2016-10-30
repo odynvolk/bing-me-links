@@ -32,7 +32,10 @@ function* search(keyword, first = 0, proxy) {
 
 function searchRequest(keyword, first = 0, proxy) {
   const opts = {
-    url: `http://www.bing.com/search?first=${first}&count=50&q=${keyword}`
+    url: `http://www.bing.com/search?first=${first}&count=50&q=${encodeURIComponent(keyword)}`,
+    headers: {
+      "User-Agent": randomUserAgent()
+    }
   };
   if (proxy) opts.proxy = proxy;
 
@@ -43,6 +46,22 @@ function searchRequest(keyword, first = 0, proxy) {
         allowedAttributes: false
       }));
     });
+}
+
+function randomUserAgent() {
+  return _.random([
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_1) AppleWebKit/534.48.3 (KHTML, like Gecko) Version/5.1 Safari/534.48.3",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/14.0.835.202 Safari/535.1",
+    "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.17) Gecko/20110420 Firefox/3.6.17",
+    "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media",
+    "Opera/9.80 (X11; Linux i686; U; en) Presto/2.9.168 Version/11.50",
+    "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
+    "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36",
+    "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:27.0) Gecko/20100101 Firefox/27.0",
+    "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36"
+  ]);
 }
 
 module.exports.search = search;

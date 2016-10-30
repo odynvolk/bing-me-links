@@ -14,8 +14,9 @@ describe("bing me links", () => {
       .then((response) => {
         expect(response).to.exist;
         expect(response.length).to.be.above(60);
-        expect(response[1]).to.include("https://www.javascript.com/");
+        expect(response).to.include("https://www.javascript.com/");
         expect(response).to.include("http://www.javascriptkit.com/");
+        expect(response).to.include("http://www.aliada.net/mqulbow/");
 
         done();
       });
