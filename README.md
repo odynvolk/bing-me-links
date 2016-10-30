@@ -14,9 +14,11 @@ $ npm bing-me-links --save
 ```js
 
 const bingMeLinks = require("bing-me-links");
-const keyword = "javascript";
+const vo = require("vo");
 
-bingMeLinks.googleplus(keyword)
+const keyword = "javascript";  
+const search = vo(bingMeLinks.search)(keyword);
+    vo(search)
   .then((links) => {
     //=> ["http://whatever1", "http://whatever2"]
   });

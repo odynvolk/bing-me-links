@@ -1,6 +1,6 @@
 {
   "name": "bing-me-links",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "description": "Searches Bing and retrieves links in serp",
   "dependencies": {
@@ -23,5 +23,9 @@
   "repository": "odynvolk/bing-me-links",
   "scripts": {
     "test": "mocha && eslint ."
-  }
+  },
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js"
 }
