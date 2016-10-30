@@ -1,4 +1,4 @@
---timeout 60000
+--timeout 120000
 --reporter dot
 --recursive
 --compilers coffee:coffee-script/register

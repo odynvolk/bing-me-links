@@ -6,10 +6,11 @@ const vo = require("vo");
 const bingMeLinks = require("../index.js");
 
 describe("bing me links", () => {
-  it("should return found links for keyword", (done) => {
+  it("should return found links for keyword from bing", (done) => {
+    const engine = "bing";
     const keyword = "javascript";
 
-    const search = vo(bingMeLinks.search)(keyword);
+    const search = vo(bingMeLinks.search(engine, keyword));
     vo(search)
       .then((response) => {
         expect(response).to.exist;
@@ -21,4 +22,22 @@ describe("bing me links", () => {
         done();
       });
   });
+
+  it("should return found links for keyword from yahoo", (done) => {
+    const engine = "yahoo";
+    const keyword = "javascript";
+
+    const search = vo(bingMeLinks.search(engine, keyword));
+    vo(search)
+      .then((response) => {
+        expect(response).to.exist;
+        expect(response.length).to.be.above(60);
+        expect(response).to.include("https://www.javascript.com/try");
+        expect(response).to.include("https://www.npmjs.com/");
+        expect(response).to.include("http://javascript.info/");
+
+        done();
+      });
+  });
+
 });

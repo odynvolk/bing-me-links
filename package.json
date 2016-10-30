@@ -1,8 +1,8 @@
 {
   "name": "bing-me-links",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "license": "MIT",
-  "description": "Searches Bing and retrieves links in serp",
+  "description": "Searches Bing and Yahoo and retrieves links in serps",
   "dependencies": {
     "cheerio": "^0.20.0",
     "lodash": "^4.16.4",

@@ -6,13 +6,18 @@ const rp = require("request-promise");
 const sanitizeHtml = require("sanitize-html");
 const sleep = require("sleep");
 
-function* search(keyword, first = 0, proxy) {
+function* search(engine = "bing", keyword, first = 0, proxy) {
+  if (engine === "bing") return yield searchBing(keyword, first, proxy);
+  else return yield searchYahoo(keyword, first, proxy);
+}
+
+function* searchBing(keyword, first = 0, proxy) {
   const links = [];
   let nextExists = true;
   let currentPage = 0;
 
   while (nextExists && currentPage < 10) {
-    const $ = yield searchRequest(keyword, first, proxy);
+    const $ = yield searchRequestBing(keyword, first, proxy);
 
     const as = $("#b_results .b_algo h2 a");
     _.each(as, (a) => {
@@ -27,10 +32,34 @@ function* search(keyword, first = 0, proxy) {
     first += 50;
   }
 
-  return links;
+  return yield links;
 }
 
-function searchRequest(keyword, first = 0, proxy) {
+function* searchYahoo(keyword, first = 0, proxy) {
+  const links = [];
+  let nextExists = true;
+  let currentPage = 0;
+
+  while (nextExists && currentPage < 15) {
+    const $ = yield searchRequestYahoo(keyword, first, proxy);
+
+    const as = $("#web a.ac-algo");
+    _.each(as, (a) => {
+      links.push($(a).attr("href"));
+    });
+
+    sleep.sleep(_.random(2, 5));
+
+    currentPage++;
+    nextExists = $("a.next").length > 0;
+
+    first += 30;
+  }
+
+  return yield links;
+}
+
+function searchRequestBing(keyword, first = 0, proxy) {
   const opts = {
     url: `http://www.bing.com/search?first=${first}&count=50&q=${encodeURIComponent(keyword)}`,
     headers: {
@@ -45,6 +74,24 @@ function searchRequest(keyword, first = 0, proxy) {
         allowedTags: false,
         allowedAttributes: false
       }));
+    });
+}
+
+function searchRequestYahoo(keyword, first = 0, proxy) {
+  const opts = {
+    url: `https://search.yahoo.com/search?p=${encodeURIComponent(keyword)}&n=30&b=${first}`,
+    headers: {
+      "User-Agent": randomUserAgent()
+    }
+  };
+  if (proxy) opts.proxy = proxy;
+
+  return rp.get(opts)
+    .then((data) => {
+      return Promise.resolve(cheerio.load(sanitizeHtml(data, {
+        allowedTags: false,
+        allowedAttributes: false
+      })));
     });
 }
 

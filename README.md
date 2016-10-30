@@ -1,5 +1,5 @@
 # bing-me-links
-> A simple node module for links from the Bing search engine.
+> A simple node module for links from the Bing and Yahoo search engines.
 
 ## Install
 
@@ -16,9 +16,10 @@ $ npm bing-me-links --save
 const bingMeLinks = require("bing-me-links");
 const vo = require("vo");
 
+const engine = "bing";
 const keyword = "javascript";  
-const search = vo(bingMeLinks.search)(keyword);
-    vo(search)
+const search = vo(bingMeLinks.search(engine, keyword));
+vo(search)
   .then((links) => {
     //=> ["http://whatever1", "http://whatever2"]
   });
