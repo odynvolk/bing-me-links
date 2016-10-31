@@ -61,7 +61,7 @@ function* searchYahoo(keyword, first = 0, proxy) {
 
 function searchRequestBing(keyword, first = 0, proxy) {
   const opts = {
-    url: `http://www.bing.com/search?first=${first}&count=50&q=${encodeURIComponent(keyword)}`,
+    url: `http://www.bing.com/search?first=${first}&count=50&q=${keyword}`,
     headers: {
       "User-Agent": randomUserAgent()
     }
@@ -79,7 +79,7 @@ function searchRequestBing(keyword, first = 0, proxy) {
 
 function searchRequestYahoo(keyword, first = 0, proxy) {
   const opts = {
-    url: `https://search.yahoo.com/search?p=${encodeURIComponent(keyword)}&n=30&b=${first}`,
+    url: `https://search.yahoo.com/search?p=${keyword}&n=30&b=${first}`,
     headers: {
       "User-Agent": randomUserAgent()
     }
