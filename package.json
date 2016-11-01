@@ -1,6 +1,6 @@
 {
   "name": "bing-me-links",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "license": "MIT",
   "description": "Searches Bing and Yahoo and retrieves links in serps",
   "dependencies": {

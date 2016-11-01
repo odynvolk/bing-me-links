@@ -112,3 +112,5 @@ function randomUserAgent() {
 }
 
 module.exports.search = search;
+module.exports.searchBing = searchBing;
+module.exports.searchYahoo = searchYahoo;
