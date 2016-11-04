@@ -6,7 +6,7 @@
 Install with [npm](https://www.npmjs.com/)
 
 ```sh
-$ npm bing-me-links --save
+$ npm install bing-me-links --save
 ```
 
 ## Usage
