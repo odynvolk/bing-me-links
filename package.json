@@ -1,6 +1,6 @@
 {
   "name": "bing-me-links",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "license": "MIT",
   "description": "Searches Bing and Yahoo and retrieves links in serps",
   "author": "Alexi Rahman",
