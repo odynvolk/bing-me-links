@@ -1,0 +1,9 @@
+{
+  "log": "stdout",
+  "logLevel": "info",
+
+  "sleepTime": {
+    "min": 2,
+    "max": 5
+  }
+}

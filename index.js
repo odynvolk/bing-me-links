@@ -2,29 +2,29 @@
 
 const _ = require("lodash");
 const cheerio = require("cheerio");
+const config = require("exp-config");
 const rp = require("request-promise");
 const sanitizeHtml = require("sanitize-html");
 const sleep = require("sleep");
 
-function* search(engine = "bing", keyword, first = 0, proxy) {
-  if (engine === "bing") return yield searchBing(keyword, first, proxy);
-  else return yield searchYahoo(keyword, first, proxy);
-}
+const logger = require("./lib/logger");
 
-function* searchBing(keyword, first = 0, proxy) {
+const bingMeLinks = {};
+
+bingMeLinks.searchBing = function* (query, first = 0, proxy) {
   const links = [];
   let nextExists = true;
   let currentPage = 0;
 
   while (nextExists && currentPage < 10) {
-    const $ = yield searchRequestBing(keyword, first, proxy);
+    const $ = yield searchRequestBing(query, first, proxy);
 
     const as = $("#b_results .b_algo h2 a");
     _.each(as, (a) => {
       links.push($(a).attr("href"));
     });
 
-    sleep.sleep(_.random(2, 5));
+    sleep.sleep(_.random(config.sleepTime.min, config.sleepTime.max));
 
     currentPage++;
     nextExists = $(".sw_next").length > 0;
@@ -33,22 +33,22 @@ function* searchBing(keyword, first = 0, proxy) {
   }
 
   return yield links;
-}
+};
 
-function* searchYahoo(keyword, first = 0, proxy) {
+bingMeLinks.searchYahoo = function* (query, first = 0, proxy) {
   const links = [];
   let nextExists = true;
   let currentPage = 0;
 
   while (nextExists && currentPage < 15) {
-    const $ = yield searchRequestYahoo(keyword, first, proxy);
+    const $ = yield searchRequestYahoo(query, first, proxy);
 
     const as = $("#web a.ac-algo");
     _.each(as, (a) => {
       links.push($(a).attr("href"));
     });
 
-    sleep.sleep(_.random(2, 5));
+    sleep.sleep(_.random(config.sleepTime.min, config.sleepTime.max));
 
     currentPage++;
     nextExists = $("a.next").length > 0;
@@ -57,16 +57,17 @@ function* searchYahoo(keyword, first = 0, proxy) {
   }
 
   return yield links;
-}
+};
 
-function searchRequestBing(keyword, first = 0, proxy) {
+function searchRequestBing(query, first = 0, proxy) {
   const opts = {
-    url: `http://www.bing.com/search?first=${first}&count=50&q=${keyword}`,
+    url: `http://www.bing.com/search?first=${first}&count=50&q=${query}`,
     headers: {
       "User-Agent": randomUserAgent()
     }
   };
   if (proxy) opts.proxy = proxy;
+  logger.info(`Searching Bing with [${query}] offset ${first}`);
 
   return rp.get(opts)
     .then((data) => {
@@ -77,14 +78,15 @@ function searchRequestBing(keyword, first = 0, proxy) {
     });
 }
 
-function searchRequestYahoo(keyword, first = 0, proxy) {
+function searchRequestYahoo(query, first = 0, proxy) {
   const opts = {
-    url: `https://search.yahoo.com/search?p=${keyword}&n=30&b=${first}`,
+    url: `https://search.yahoo.com/search?p=${query}&n=30&b=${first}`,
     headers: {
       "User-Agent": randomUserAgent()
     }
   };
   if (proxy) opts.proxy = proxy;
+  logger.info(`Searching Yahoo with [${query}] offset ${first}`);
 
   return rp.get(opts)
     .then((data) => {
@@ -111,6 +113,4 @@ function randomUserAgent() {
   ]);
 }
 
-module.exports.search = search;
-module.exports.searchBing = searchBing;
-module.exports.searchYahoo = searchYahoo;
+module.exports = bingMeLinks;

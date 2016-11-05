@@ -3,14 +3,13 @@
 const expect = require("chai").expect;
 const vo = require("vo");
 
-const bingMeLinks = require("../index.js");
+const bingMeLinks = require("../index");
 
 describe("bing me links", () => {
   it("should return found links for keyword from bing", (done) => {
-    const engine = "bing";
-    const keyword = "javascript";
+    const query = "javascript";
 
-    const search = vo(bingMeLinks.search(engine, keyword));
+    const search = vo(bingMeLinks.searchBing(query));
     vo(search)
       .then((response) => {
         expect(response).to.exist;
@@ -24,26 +23,24 @@ describe("bing me links", () => {
   });
 
   it("should return found links for keyword with url from bing", (done) => {
-    const engine = "bing";
-    const keyword = "http://www.thefreedictionary.com/question+mark";
+    const query = "http://www.thefreedictionary.com/question+mark";
 
-    const search = vo(bingMeLinks.search(engine, keyword));
+    const search = vo(bingMeLinks.searchBing(query));
     vo(search)
       .then((response) => {
         expect(response).to.exist;
         expect(response.length).to.be.above(20);
         expect(response).to.include("http://legal-dictionary.thefreedictionary.com/question+mark");
-        expect(response).to.include("https://www.rockbox.org/irc/log-20060913");
+        expect(response).to.include("https://en.wikipedia.org/wiki/Question_mar");
 
         done();
       });
   });
 
   it("should return found links for keyword from yahoo", (done) => {
-    const engine = "yahoo";
-    const keyword = "javascript";
+    const query = "javascript";
 
-    const search = vo(bingMeLinks.search(engine, keyword));
+    const search = vo(bingMeLinks.searchYahoo(query));
     vo(search)
       .then((response) => {
         expect(response).to.exist;

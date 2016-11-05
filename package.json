@@ -1,11 +1,14 @@
 {
   "name": "bing-me-links",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "license": "MIT",
   "description": "Searches Bing and Yahoo and retrieves links in serps",
+  "author": "Alexi Rahman",
   "dependencies": {
     "cheerio": "^0.20.0",
+    "exp-config": "^1.3.1",
     "lodash": "^4.16.4",
+    "log": "^1.4.0",
     "request": "^2.60.0",
     "request-promise": "^4.1.1",
     "sanitize-html": "^1.13.0",
@@ -25,6 +28,8 @@
     "test": "mocha && eslint ."
   },
   "files": [
+    "config",
+    "lib",
     "index.js"
   ],
   "main": "index.js"
