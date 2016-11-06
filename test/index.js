@@ -6,7 +6,7 @@ const vo = require("vo");
 const bingMeLinks = require("../index");
 
 describe("bing me links", () => {
-  it("should return found links for keyword from bing", (done) => {
+  it("should return found links for query from bing", (done) => {
     const query = "javascript";
 
     const search = vo(bingMeLinks.searchBing(query));
@@ -22,7 +22,7 @@ describe("bing me links", () => {
       });
   });
 
-  it("should return found links for keyword with url from bing", (done) => {
+  it("should return found links for query with url from bing", (done) => {
     const query = "http://www.thefreedictionary.com/question+mark";
 
     const search = vo(bingMeLinks.searchBing(query));
@@ -37,7 +37,7 @@ describe("bing me links", () => {
       });
   });
 
-  it("should return found links for keyword from yahoo", (done) => {
+  it("should return found links for query from yahoo", (done) => {
     const query = "javascript";
 
     const search = vo(bingMeLinks.searchYahoo(query));
@@ -48,6 +48,22 @@ describe("bing me links", () => {
         expect(response).to.include("https://www.javascript.com/try");
         expect(response).to.include("https://www.npmjs.com/");
         expect(response).to.include("http://javascript.info/");
+
+        done();
+      });
+  });
+
+  it("should return found links for query from qwant", (done) => {
+    const query = "javascript";
+
+    const search = vo(bingMeLinks.searchQwant(query));
+    vo(search)
+      .then((response) => {
+        expect(response).to.exist;
+        expect(response.length).to.be.above(20);
+        expect(response).to.include("https://www.javascript.com/");
+        expect(response).to.include("http://www.javascriptkit.com/");
+        expect(response).to.include("http://www.w3schools.com/js/js_comparisons.asp");
 
         done();
       });

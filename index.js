@@ -9,6 +9,9 @@ const sleep = require("sleep");
 
 const logger = require("./lib/logger");
 
+const sleepTimeMin = config.sleepTime.min || 0;
+const sleepTimeMax = config.sleepTime.max || 0;
+
 const bingMeLinks = {};
 
 bingMeLinks.searchBing = function* (query, first = 0, proxy) {
@@ -24,7 +27,7 @@ bingMeLinks.searchBing = function* (query, first = 0, proxy) {
       links.push($(a).attr("href"));
     });
 
-    sleep.sleep(_.random(config.sleepTime.min, config.sleepTime.max));
+    sleep.sleep(_.random(sleepTimeMin, sleepTimeMax));
 
     currentPage++;
     nextExists = $(".sw_next").length > 0;
@@ -48,12 +51,34 @@ bingMeLinks.searchYahoo = function* (query, first = 0, proxy) {
       links.push($(a).attr("href"));
     });
 
-    sleep.sleep(_.random(config.sleepTime.min, config.sleepTime.max));
+    sleep.sleep(_.random(sleepTimeMin, sleepTimeMax));
 
     currentPage++;
     nextExists = $("a.next").length > 0;
 
     first += 30;
+  }
+
+  return yield links;
+};
+
+bingMeLinks.searchQwant = function* (query, first = 0, proxy) {
+  const links = [];
+  let nextExists = true;
+  let currentPage = 0;
+
+  while (nextExists && currentPage < 6) {
+    const items = yield searchRequestQwant(query, first, proxy);
+    _.each(items, (item) => {
+      links.push(item.url);
+    });
+
+    sleep.sleep(_.random(sleepTimeMin, sleepTimeMax));
+
+    currentPage++;
+    nextExists = items.length > 9;
+
+    first += 10;
   }
 
   return yield links;
@@ -97,6 +122,23 @@ function searchRequestYahoo(query, first = 0, proxy) {
     });
 }
 
+function searchRequestQwant(query, first = 0, proxy) {
+  const opts = {
+    url: `https://api.qwant.com/api/search/web?count=10&offset=${first}&q=${query}`,
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0",
+    },
+    resolveWithFullResponse: true
+  };
+  if (proxy) opts.proxy = proxy;
+  logger.info(`Searching Qwant with [${query}] offset ${first}`);
+
+  return rp.get(opts)
+    .then((data) => {
+      return Promise.resolve(JSON.parse(data.body).data.result.items);
+    });
+}
+
 function randomUserAgent() {
   return _.random([
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
@@ -109,7 +151,8 @@ function randomUserAgent() {
     "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
     "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36",
     "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:27.0) Gecko/20100101 Firefox/27.0",
-    "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36"
+    "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0"
   ]);
 }
 
