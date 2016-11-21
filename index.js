@@ -9,8 +9,8 @@ const sleep = require("sleep");
 
 const logger = require("./lib/logger");
 
-const sleepTimeMin = config.sleepTime.min || 0;
-const sleepTimeMax = config.sleepTime.max || 0;
+const sleepTimeMin = config.sleepTime && config.sleepTime.min || 0;
+const sleepTimeMax = config.sleepTime && config.sleepTime.max || 0;
 
 const bingMeLinks = {};
 
