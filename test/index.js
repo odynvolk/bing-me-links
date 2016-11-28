@@ -31,7 +31,7 @@ describe("bing me links", () => {
         expect(response).to.exist;
         expect(response.length).to.be.above(20);
         expect(response).to.include("http://legal-dictionary.thefreedictionary.com/question+mark");
-        expect(response).to.include("https://en.wikipedia.org/wiki/Question_mar");
+        expect(response).to.include("https://en.wikipedia.org/wiki/Question_mark");
 
         done();
       });

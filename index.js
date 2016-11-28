@@ -86,7 +86,7 @@ bingMeLinks.searchQwant = function* (query, first = 0, proxy) {
 
 function searchRequestBing(query, first = 0, proxy) {
   const opts = {
-    url: `http://www.bing.com/search?first=${first}&count=50&q=${query}`,
+    url: `http://www.bing.com/search?first=${first}&count=50&q=${encodeURIComponent(query)}`,
     headers: {
       "User-Agent": randomUserAgent()
     }
@@ -105,7 +105,7 @@ function searchRequestBing(query, first = 0, proxy) {
 
 function searchRequestYahoo(query, first = 0, proxy) {
   const opts = {
-    url: `https://search.yahoo.com/search?p=${query}&n=30&b=${first}`,
+    url: `https://search.yahoo.com/search?p=${encodeURIComponent(query)}&n=30&b=${first}`,
     headers: {
       "User-Agent": randomUserAgent()
     }
@@ -124,7 +124,7 @@ function searchRequestYahoo(query, first = 0, proxy) {
 
 function searchRequestQwant(query, first = 0, proxy) {
   const opts = {
-    url: `https://api.qwant.com/api/search/web?count=10&offset=${first}&q=${query}`,
+    url: `https://api.qwant.com/api/search/web?count=10&offset=${first}&q=${encodeURIComponent(query)}`,
     headers: {
       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0",
     },
