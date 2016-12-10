@@ -1,5 +1,5 @@
 # bing-me-links
-> A simple node module for links from the Bing, Yahoo and Qwant search engines.
+> A simple node module for links from the Bing, StartPage, Yahoo and Qwant search engines.
 
 ## Install
 
@@ -21,6 +21,12 @@ const vo = require("vo");
 const query = "javascript";  
 const bing = vo(bingMeLinks.searchBing(query));
 vo(bing)
+  .then((links) => {
+    //=> ["http://whatever1", "http://whatever2"]
+  });
+
+const startPage = vo(bingMeLinks.searchStartPage(query));
+vo(yahoo)
   .then((links) => {
     //=> ["http://whatever1", "http://whatever2"]
   });

@@ -37,6 +37,36 @@ describe("bing me links", () => {
       });
   });
 
+  it("should return found links for query from startpage", (done) => {
+    const query = "javascript";
+
+    const search = vo(bingMeLinks.searchStartPage(query));
+    vo(search)
+      .then((response) => {
+        expect(response).to.exist;
+        expect(response.length).to.be.above(60);
+        expect(response).to.include("https://www.javascript.com/");
+        expect(response).to.include("https://github.com/airbnb/javascript");
+        expect(response).to.include("https://codecanyon.net/category/javascript");
+
+        done();
+      });
+  });
+
+  it("should return found links for query with url from startpage", (done) => {
+    const query = "http://www.thefreedictionary.com/question+mark";
+
+    const search = vo(bingMeLinks.searchStartPage(query));
+    vo(search)
+      .then((response) => {
+        expect(response).to.exist;
+        expect(response.length).to.be.above(20);
+        expect(response).to.include("http://www.thefreedictionary.com/punctuation+mark");
+        expect(response).to.include("https://en.wikipedia.org/wiki/Leading_question");
+
+        done();
+      });
+  });
   it("should return found links for query from yahoo", (done) => {
     const query = "javascript";
 

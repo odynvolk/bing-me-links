@@ -38,6 +38,30 @@ bingMeLinks.searchBing = function* (query, first = 0, proxy) {
   return yield links;
 };
 
+bingMeLinks.searchStartPage = function* (query, first = 0, proxy) {
+  const links = [];
+  let nextExists = true;
+  let currentPage = 0;
+
+  while (nextExists && currentPage < 10) {
+    const $ = yield searchRequestStartPage(query, first, proxy);
+
+    const as = $(".web_regular_results h3 a");
+    _.each(as, (a) => {
+      links.push($(a).attr("href"));
+    });
+
+    sleep.sleep(_.random(sleepTimeMin, sleepTimeMax));
+
+    currentPage++;
+    nextExists = $("#nextnavbar").length > 0;
+
+    first += 10;
+  }
+
+  return yield links;
+};
+
 bingMeLinks.searchYahoo = function* (query, first = 0, proxy) {
   const links = [];
   let nextExists = true;
@@ -100,6 +124,46 @@ function searchRequestBing(query, first = 0, proxy) {
         allowedTags: false,
         allowedAttributes: false
       }));
+    });
+}
+
+let previousQid;
+
+function searchRequestStartPage(query, first = 0, proxy) {
+  const opts = {
+    uri: "https://www.startpage.com/do/asearch",
+    form: {
+      cat: "web",
+      cmd: "process_search",
+      language: "english",
+      query: query,
+      startat: first,
+      hmb: 1,
+      t: "air",
+      nj: 0
+    },
+    headers: {
+      "User-Agent": randomUserAgent()
+    }
+  };
+  if (previousQid) opts.form.qid = previousQid;
+
+  if (proxy) opts.proxy = proxy;
+  logger.info(`Searching StartPage with [${query}] offset ${first}`);
+
+  return rp.post(opts)
+    .then((data) => {
+      const $ = cheerio.load(sanitizeHtml(data, {
+        allowedTags: false,
+        allowedAttributes: false
+      }));
+
+      if ($("#nextnavbar").length > 0) {
+        const qid = $("#nextnavbar form input[name=\"qid\"]");
+        previousQid = qid.attr("value");
+      }
+
+      return $;
     });
 }
 
