@@ -1,3 +1,7 @@
+0.7.0 / 2017-03-04
+===================
+* Added Baidu search engine.
+
 0.6.0 / 2016-12-10
 ===================
 * Added StartPage search engine.

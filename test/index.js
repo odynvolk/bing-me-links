@@ -6,6 +6,22 @@ const vo = require("vo");
 const bingMeLinks = require("../index");
 
 describe("bing me links", () => {
+  it("should return found links for query from baidu", (done) => {
+    const query = "javascript";
+
+    const search = vo(bingMeLinks.searchBaidu(query));
+    vo(search)
+      .then((response) => {
+        expect(response).to.exist;
+        expect(response.length).to.be.above(20);
+        expect(response).to.include("http://www.w3school.com.cn/js/");
+        expect(response).to.include("http://www.baike.com/wiki/javascript");
+        expect(response).to.include("http://bbs.csdn.net/forums/JavaScript/");
+
+        done();
+      });
+  });
+
   it("should return found links for query from bing", (done) => {
     const query = "javascript";
 

@@ -14,7 +14,32 @@ const sleepTimeMax = config.sleepTime && config.sleepTime.max || 0;
 
 const bingMeLinks = {};
 
-bingMeLinks.searchBing = function* (query, first = 0, proxy) {
+bingMeLinks.searchBaidu = function*(query, first = 0, proxy) {
+  const links = [];
+  let nextExists = true;
+  let currentPage = 0;
+
+  while (nextExists && currentPage < 10) {
+    const $ = yield searchRequestBaidu(query, first, proxy);
+
+    const as = $("a.c-showurl");
+    _.each(as, (a) => {
+      const link = resolveBaiduUrl($(a).attr("href"));
+      if (link) links.push(link);
+    });
+
+    sleep.sleep(_.random(sleepTimeMin, sleepTimeMax));
+
+    currentPage++;
+    nextExists = $(".n").length > 0;
+
+    first += 10;
+  }
+
+  return yield links;
+};
+
+bingMeLinks.searchBing = function*(query, first = 0, proxy) {
   const links = [];
   let nextExists = true;
   let currentPage = 0;
@@ -38,7 +63,7 @@ bingMeLinks.searchBing = function* (query, first = 0, proxy) {
   return yield links;
 };
 
-bingMeLinks.searchStartPage = function* (query, first = 0, proxy) {
+bingMeLinks.searchStartPage = function*(query, first = 0, proxy) {
   const links = [];
   let nextExists = true;
   let currentPage = 0;
@@ -62,7 +87,7 @@ bingMeLinks.searchStartPage = function* (query, first = 0, proxy) {
   return yield links;
 };
 
-bingMeLinks.searchYahoo = function* (query, first = 0, proxy) {
+bingMeLinks.searchYahoo = function*(query, first = 0, proxy) {
   const links = [];
   let nextExists = true;
   let currentPage = 0;
@@ -86,7 +111,7 @@ bingMeLinks.searchYahoo = function* (query, first = 0, proxy) {
   return yield links;
 };
 
-bingMeLinks.searchQwant = function* (query, first = 0, proxy) {
+bingMeLinks.searchQwant = function*(query, first = 0, proxy) {
   const links = [];
   let nextExists = true;
   let currentPage = 0;
@@ -107,6 +132,41 @@ bingMeLinks.searchQwant = function* (query, first = 0, proxy) {
 
   return yield links;
 };
+
+function searchRequestBaidu(query, first = 0, proxy) {
+  const opts = {
+    url: `http://www.baidu.com/s?pn=${first}&wd=${encodeURIComponent(query)}`,
+    headers: {
+      "User-Agent": randomUserAgent()
+    }
+  };
+  if (proxy) opts.proxy = proxy;
+  logger.info(`Searching Baidu with [${query}] offset ${first}`);
+
+  return rp.get(opts)
+    .then((data) => {
+      return cheerio.load(sanitizeHtml(data, {
+        allowedTags: false,
+        allowedAttributes: false
+      }));
+    });
+}
+
+function resolveBaiduUrl(url, proxy) {
+  const opts = {
+    url: url,
+    headers: {
+      "User-Agent": randomUserAgent()
+    }
+  };
+  if (proxy) opts.proxy = proxy;
+
+  return rp.get(opts)
+    .then((data) => {
+      const match = data.match(/"http:\/\/.*"/);
+      if (match) return match[0].replace(/"/g, "");
+    });
+}
 
 function searchRequestBing(query, first = 0, proxy) {
   const opts = {
