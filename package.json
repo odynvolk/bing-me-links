@@ -1,8 +1,8 @@
 {
   "name": "bing-me-links",
-  "version": "0.7.0",
+  "version": "1.0.0",
   "license": "MIT",
-  "description": "Scrapes Baidu, Bing, StartPage, Yahoo and Qwant and retrieves links in serps",
+  "description": "Scrapes Baidu, Bing, StartPage, Yahoo, Webcrawler, Qwant and retrieves links in serps",
   "author": "Alexi Rahman",
   "dependencies": {
     "cheerio": "^0.22.0",

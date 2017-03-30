@@ -1,5 +1,5 @@
 # bing-me-links
-> A simple node module for scraping links from the Baidu, Bing, StartPage, Yahoo and Qwant search engines.
+> A simple node module for scraping links from the Baidu, Bing, StartPage, Webcrawler, Yahoo, and Qwant search engines.
 
 ## Install
 
@@ -36,7 +36,13 @@ vo(startPage)
   .then((links) => {
     //=> ["http://whatever1", "http://whatever2"]
   });
-  
+
+const webcrawler = vo(bingMeLinks.searchWebcrawler(query));
+vo(webcrawler)
+  .then((links) => {
+    //=> ["http://whatever1", "http://whatever2"]
+  });
+    
 const yahoo = vo(bingMeLinks.searchYahoo(query));
 vo(yahoo)
   .then((links) => {

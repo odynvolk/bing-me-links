@@ -133,6 +133,30 @@ bingMeLinks.searchQwant = function*(query, first = 0, proxy) {
   return yield links;
 };
 
+bingMeLinks.searchWebcrawler = function*(query, first = 0, proxy) {
+  const links = [];
+  let nextExists = true;
+  let currentPage = 0;
+
+  while (nextExists && currentPage < 10) {
+    const $ = yield searchRequestWebcrawler(query, first, proxy);
+
+    const as = $(".results a.title");
+    _.each(as, (a) => {
+      links.push($(a).attr("href"));
+    });
+
+    sleep.sleep(_.random(sleepTimeMin, sleepTimeMax));
+
+    currentPage++;
+    nextExists = $("a.nextprev").length > 0;
+
+    first += 1;
+  }
+
+  return yield links;
+};
+
 function searchRequestBaidu(query, first = 0, proxy) {
   const opts = {
     url: `http://www.baidu.com/s?pn=${first}&wd=${encodeURIComponent(query)}`,
@@ -250,7 +274,7 @@ function searchRequestQwant(query, first = 0, proxy) {
   const opts = {
     url: `https://api.qwant.com/api/search/web?count=10&offset=${first}&q=${encodeURIComponent(query)}`,
     headers: {
-      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0",
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0"
     },
     resolveWithFullResponse: true
   };
@@ -260,6 +284,25 @@ function searchRequestQwant(query, first = 0, proxy) {
   return rp.get(opts)
     .then((data) => {
       return Promise.resolve(JSON.parse(data.body).data.result.items);
+    });
+}
+
+function searchRequestWebcrawler(query, first = 0, proxy) {
+  const opts = {
+    url: `http://www.webcrawler.com/serp?q=${encodeURIComponent(query)}&page=${first}`,
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0"
+    }
+  };
+  if (proxy) opts.proxy = proxy;
+  logger.info(`Searching Webcrawler with [${query}] offset ${first}`);
+
+  return rp.get(opts)
+    .then((data) => {
+      return cheerio.load(sanitizeHtml(data, {
+        allowedTags: false,
+        allowedAttributes: false
+      }));
     });
 }
 

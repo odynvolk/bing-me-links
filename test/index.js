@@ -115,4 +115,20 @@ describe("bing me links", () => {
       });
   });
 
+  it("should return found links for query from webcrawler", (done) => {
+    const query = "javascript";
+
+    const search = vo(bingMeLinks.searchWebcrawler(query));
+    vo(search)
+      .then((response) => {
+      console.log("---- index", response)
+        expect(response.length).to.be.above(20);
+        expect(response).to.include("http://www.javascriptsource.com/");
+        expect(response).to.include("https://www.sitepoint.com/javascript/");
+        expect(response).to.include("http://www.enable-javascript.com/");
+
+        done();
+      });
+  });
+
 });
